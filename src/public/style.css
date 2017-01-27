@@ -1,0 +1,44 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+#messages-wrapper {
+  position: relative;
+  height: 100%;
+}
+
+#messages {
+  padding: 0;
+  position: absolute;
+  left: 50%;
+  border: 3px solid black;
+  margin-left: -400px;
+  width: 800px;
+  height: 400px;
+  overflow: scroll;
+}
+
+#messages li {
+  padding: 10px;
+}
+
+#message-input-container {
+  position: absolute;
+  width: 800px;
+  margin-left: -400px;
+  left: 50%;
+  bottom: 15%;
+  display: flex;
+  align-items: center;
+}
+
+#message-input-holder {
+  padding: 10px;
+  flex-grow: 1;
+}
+
+#message-input-send {
+  margin-left: 10px;
+  padding: 10px;
+}
