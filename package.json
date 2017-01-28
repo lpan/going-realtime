@@ -1,0 +1,29 @@
+{
+  "name": "mongodb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm-run-all --parallel watch:*",
+    "watch:client": "gulp",
+    "watch:server": "nodemon src/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^1.2.4",
+    "koa-static": "^2.0.0",
+    "socket.io": "^1.7.2"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-cached": "^1.1.1",
+    "gulp-cli": "^1.2.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-remember": "^0.3.1",
+    "gulp-uglify": "^2.0.1",
+    "nodemon": "^1.11.0",
+    "npm-run-all": "^4.0.1"
+  }
+}

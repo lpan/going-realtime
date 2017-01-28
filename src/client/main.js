@@ -43,8 +43,12 @@ function renderName(name) {
 
 window.onload = function () {
   var state = initState();
-  renderID(state.id);
-  renderName(state.name);
 
   var socket = io();
+  socket.on('news', function (payload) {
+    alert(payload.data);
+  });
+
+  renderID(state.id);
+  renderName(state.name);
 }
