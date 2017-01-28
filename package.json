@@ -5,25 +5,26 @@
   "main": "index.js",
   "scripts": {
     "start": "npm-run-all --parallel watch:*",
-    "watch:client": "gulp",
+    "watch:client": "webpack --watch",
     "watch:server": "nodemon src/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "js-cookie": "^2.1.3",
     "koa": "^1.2.4",
     "koa-static": "^2.0.0",
-    "socket.io": "^1.7.2"
+    "rxjs": "^5.0.3",
+    "socket.io": "^1.7.2",
+    "socket.io-client": "^1.7.2"
   },
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-cached": "^1.1.1",
-    "gulp-cli": "^1.2.2",
-    "gulp-concat": "^2.6.1",
-    "gulp-remember": "^0.3.1",
-    "gulp-uglify": "^2.0.1",
+    "babel-core": "^6.22.1",
+    "babel-loader": "^6.2.10",
+    "babel-preset-es2015": "^6.22.0",
     "nodemon": "^1.11.0",
-    "npm-run-all": "^4.0.1"
+    "npm-run-all": "^4.0.1",
+    "webpack": "^1.14.0"
   }
 }

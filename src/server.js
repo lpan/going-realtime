@@ -17,7 +17,9 @@ const io = SocketIO(server);
 
 io.on('connection', (socket) => {
   console.log('A user connected!!!');
-  socket.emit('news', { data: 'hello world' });
+  socket.on('message:new', (payload) => {
+    console.log(payload);
+  })
 });
 
 server.listen(PORT);
