@@ -29,6 +29,9 @@ html, body {
   margin-left: -400px;
   left: 50%;
   bottom: 15%;
+}
+
+#message-input-box {
   display: flex;
   align-items: center;
 }
