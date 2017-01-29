@@ -10,10 +10,10 @@ const { MongoClient } = require('mongodb')
 const Rx = require('rxjs/Rx');
 
 // db
-const { addMessage, getMessages } = require('./db');
+const { addMessage, getMessages, getUser, closeDB, handleError } = require('./db');
 
 // broadcasters
-const { broadcastMessages } = require('./broadcast');
+const { emitMessages, emitUserInfo } = require('./emit');
 
 const app = koa();
 
@@ -30,18 +30,26 @@ const server = http.Server(app.callback());
 const io = SocketIO(server);
 
 io.on('connection', (socket) => {
-  MongoClient.connect(DB_URL, (err, db) => {
-    getMessages(DEFAULT_LIMIT, db, broadcastMessages(socket))
-      .then((db) => { db.close(); });
+  // fetch latest chat history
+  MongoClient.connect(DB_URL)
+    .then(getMessages(DEFAULT_LIMIT, emitMessages(socket)))
+    .then(closeDB)
+    .catch(handleError);
+
+  // get user info from user id
+  socket.on('info:get', ({ id }) => {
+    MongoClient.connect(DB_URL)
+      .then(getUser(id, emitUserInfo(socket)))
+      .then(closeDB)
+      .catch(handleError);
   });
 
   socket.on('message:new', (payload) => {
-    MongoClient.connect(DB_URL, (err, db) => {
-      addMessage(payload, db)
-        .then(getMessages(DEFAULT_LIMIT, db, broadcastMessages(io)))
-        .then((db) => { db.close(); })
-        .catch((e) => { console.error(e.message) });
-    });
+    MongoClient.connect(DB_URL)
+      .then(addMessage(payload))
+      .then(getMessages(DEFAULT_LIMIT, emitMessages(io)))
+      .then(closeDB)
+      .catch(handleError);
   });
 });
 

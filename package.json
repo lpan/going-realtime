@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm-run-all --parallel watch:*",
+    "start": "npm-run-all --parallel start:db watch:*",
+    "start:db": "mongod --dbpath=data",
     "watch:client": "webpack --watch",
     "watch:server": "nodemon src/server.js"
   },

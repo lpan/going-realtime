@@ -1,20 +1,60 @@
-const addMessage = (message, db) => {
-  const collection = db.collection('messages');
-  return collection.insertOne(message);
-}
+const getDefaultName = (id) => `User-${id}`
 
-const getMessages = (limit, db, cb) => new Promise((resolve, reject) => {
-  db.collection('messages').find().limit(limit).toArray((e, docs) => {
+const addMessage = (message) => (db) => new Promise((resolve, reject) => {
+  const collection = db.collection('messages');
+  collection.insertOne(message, (e, result) => {
     if (e) {
       reject(e);
     }
 
-    cb(docs);
     resolve(db);
   });
 });
 
+const getMessages = (limit, cb) => (db) => new Promise((resolve, reject) => {
+  db.collection('messages')
+    .find()
+    .sort({ _id: -1 })
+    .limit(limit)
+    .toArray((e, docs) => {
+      if (e) {
+        reject(e);
+      }
+
+      cb(docs);
+      resolve(db);
+    });
+});
+
+const getUser = (id, cb) => (db) => new Promise((resolve, reject) => {
+  const users = db.collection('users');
+  users.findOne({ id }).then((user) => {
+    // if new user, we create an entry in db
+    if (!user) {
+      const newUser = { id, name: getDefaultName(id) };
+      users.insertOne(newUser, (e) => {
+        if (e) {
+          reject(e);
+        }
+
+        cb(newUser);
+        resolve(db);
+      })
+    }
+
+    cb(user);
+    resolve(db);
+  });
+});
+
+const closeDB = (db) => { db.close() };
+
+const handleError = (e) => { console.error(e.message); };
+
 module.exports = {
   addMessage,
   getMessages,
+  getUser,
+  closeDB,
+  handleError,
 };
