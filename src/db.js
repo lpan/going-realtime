@@ -53,7 +53,7 @@ const getUser = (id) => ({ db }) => new Promise((resolve, reject) => {
           reject(e);
         }
 
-        resolve({ db, newUser });
+        resolve({ db, user: newUser });
       });
     } else {
       resolve({ db, user });
