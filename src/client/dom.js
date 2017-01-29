@@ -1,3 +1,4 @@
+import store from './store';
 import { genID } from './utils';
 
 const getEl = (id) => document.getElementById(id);
@@ -10,8 +11,13 @@ const makeBold = (text) => {
 
 const makeItem = (message) => {
   const el = document.createElement('li');
-  const { name, text } = message;
+  const { name, text, id } = message;
   el.innerText = `${name}: ${text}`;
+
+  // if it is user's own message, set it to red
+  if (store.id === id) {
+    el.style.color = 'red';
+  }
   return el;
 }
 
