@@ -10,8 +10,8 @@ const makeBold = (text) => {
 
 const makeItem = (message) => {
   const el = document.createElement('li');
-  const { id, text } = message;
-  el.innerText = `id: ${id} --- ${text}`;
+  const { name, text } = message;
+  el.innerText = `${name}: ${text}`;
   return el;
 }
 

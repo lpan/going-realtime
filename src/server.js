@@ -8,7 +8,10 @@ const http = require('http');
 const SocketIO = require('socket.io');
 const { MongoClient } = require('mongodb')
 
-const { addMessage, getMessages, getUser, updateUser, closeDB, handleError } = require('./db');
+const {
+  addMessage, getMessages, getUser, updateUser, closeDB,
+  handleError, normalizeConn,
+} = require('./db');
 const { emitMessages, emitUserInfo } = require('./emit');
 
 const app = koa();
@@ -27,14 +30,18 @@ const io = SocketIO(server);
 io.on('connection', (socket) => {
   // fetch latest chat history
   MongoClient.connect(DB_URL)
-    .then(getMessages(DEFAULT_LIMIT, emitMessages(socket)))
+    .then(normalizeConn)
+    .then(getMessages(DEFAULT_LIMIT))
+    .then(emitMessages(socket))
     .then(closeDB)
     .catch(handleError);
 
   // get user info from user id then send object back to user
   socket.on('user:get', ({ id }) => {
     MongoClient.connect(DB_URL)
-      .then(getUser(id, emitUserInfo(socket)))
+      .then(normalizeConn)
+      .then(getUser(id))
+      .then(emitUserInfo(socket))
       .then(closeDB)
       .catch(handleError);
   });
@@ -42,7 +49,11 @@ io.on('connection', (socket) => {
   // update user info
   socket.on('user:update', (newUser) => {
     MongoClient.connect(DB_URL)
-      .then(updateUser(newUser, emitUserInfo(socket)))
+      .then(normalizeConn)
+      .then(updateUser(newUser))
+      .then(emitUserInfo(socket))
+      .then(getMessages(DEFAULT_LIMIT))
+      .then(emitMessages(io))
       .then(closeDB)
       .catch(handleError);
   });
@@ -50,8 +61,10 @@ io.on('connection', (socket) => {
   // add new messgae to db then broadcast latest messages
   socket.on('message:new', (payload) => {
     MongoClient.connect(DB_URL)
+      .then(normalizeConn)
       .then(addMessage(payload))
-      .then(getMessages(DEFAULT_LIMIT, emitMessages(io)))
+      .then(getMessages(DEFAULT_LIMIT))
+      .then(emitMessages(io))
       .then(closeDB)
       .catch(handleError);
   });
