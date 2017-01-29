@@ -39,11 +39,11 @@ const getUser = (id, cb) => (db) => new Promise((resolve, reject) => {
 
         cb(newUser);
         resolve(db);
-      })
+      });
+    } else {
+      cb(user);
+      resolve(db);
     }
-
-    cb(user);
-    resolve(db);
   });
 });
 
