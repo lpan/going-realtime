@@ -14,14 +14,13 @@ class Store {
   constructor() {
     this.name = 'User';
     this.id = getID();
-    this.message = '';
     this.socket = io();
 
     this.sendMessage = this.sendMessage.bind(this);
   }
 
-  sendMessage(message) {
-    this.socket.emit('message:new', { id: this.id, message });
+  sendMessage(text) {
+    this.socket.emit('message:new', { id: this.id, text });
   }
 }
 
