@@ -1,10 +1,12 @@
 import Cookies from 'js-cookie';
 import io from 'socket.io-client';
+import { renderUser, renderMessages } from './dom';
+import { genID } from './utils';
 
 const getID = () => {
   const key = 'chat-id';
   if (!Cookies.get(key)) {
-    Cookies.set(key, Math.floor((1 + Math.random()) * 0x10000).toString(16));
+    Cookies.set(key, genID());
   }
 
   return Cookies.get(key);
@@ -19,7 +21,25 @@ class Store {
 
     // bind instance methods to context
     this.sendMessage = this.sendMessage.bind(this);
+    this.updateUser = this.updateUser.bind(this);
     this.setListener = this.setListener.bind(this);
+    this.renderUser = this.renderUser.bind(this);
+    this.renderMessages = this.renderMessages.bind(this);
+  }
+
+  renderUser(newUser) {
+    const { name } = newUser;
+    this.name = name;
+    renderUser(newUser);
+  }
+
+  renderMessages(messages) {
+    renderMessages(messages);
+  }
+
+  updateUser(user) {
+    const { id } = this;
+    this.socket.emit('user:update', Object.assign({}, { id }, user));
   }
 
   sendMessage(text) {

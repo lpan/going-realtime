@@ -47,6 +47,17 @@ const getUser = (id, cb) => (db) => new Promise((resolve, reject) => {
   });
 });
 
+const updateUser = (newUser, cb) => (db) => new Promise((resolve, reject) => {
+  const { id } = newUser;
+  const users = db.collection('users');
+  users.updateOne({ id }, newUser)
+    .then(() => {
+      cb(newUser);
+      resolve(db);
+    })
+    .catch(reject);
+});
+
 const closeDB = (db) => { db.close() };
 
 const handleError = (e) => { console.error(e.message); };
@@ -55,6 +66,7 @@ module.exports = {
   addMessage,
   getMessages,
   getUser,
+  updateUser,
   closeDB,
   handleError,
 };

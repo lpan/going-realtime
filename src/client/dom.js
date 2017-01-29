@@ -1,3 +1,5 @@
+import { genID } from './utils';
+
 const getEl = (id) => document.getElementById(id);
 
 const makeBold = (text) => {
@@ -49,4 +51,34 @@ export const renderMessages = (messages) => {
 
   // scroll to the bottom of the message holder
   messagesHolder.scrollTop = messagesHolder.scrollHeight;
+};
+
+export const renderModal = (text, value) => {
+  const modal = document.createElement('div');
+  const id = genID();
+  modal.className = 'modal';
+  modal.id = id;
+
+  const label = document.createElement('label');
+  label.innerText = text;
+
+  const input = document.createElement('input');
+  input.id = `${id}-input`;
+  input.value = value;
+
+  const button = document.createElement('button');
+  button.innerText = 'OK';
+  button.id = `${id}-button`;
+
+  modal.appendChild(label);
+  modal.appendChild(input);
+  modal.appendChild(button);
+
+  document.body.append(modal);
+
+  return id;
+};
+
+export const deleteModal = (modal) => {
+  document.body.removeChild(modal);
 };

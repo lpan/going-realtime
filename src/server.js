@@ -8,7 +8,7 @@ const http = require('http');
 const SocketIO = require('socket.io');
 const { MongoClient } = require('mongodb')
 
-const { addMessage, getMessages, getUser, closeDB, handleError } = require('./db');
+const { addMessage, getMessages, getUser, updateUser, closeDB, handleError } = require('./db');
 const { emitMessages, emitUserInfo } = require('./emit');
 
 const app = koa();
@@ -32,9 +32,17 @@ io.on('connection', (socket) => {
     .catch(handleError);
 
   // get user info from user id then send object back to user
-  socket.on('info:get', ({ id }) => {
+  socket.on('user:get', ({ id }) => {
     MongoClient.connect(DB_URL)
       .then(getUser(id, emitUserInfo(socket)))
+      .then(closeDB)
+      .catch(handleError);
+  });
+
+  // update user info
+  socket.on('user:update', (newUser) => {
+    MongoClient.connect(DB_URL)
+      .then(updateUser(newUser, emitUserInfo(socket)))
       .then(closeDB)
       .catch(handleError);
   });
